@@ -20,4 +20,5 @@ AI生成分配系统，用于工会战人员分配
 ## 备注
 
 需要提前安装python代码运行相关库
-`pip install flask`
+`pip3 install flask`
+`pip3 install flask_cors`

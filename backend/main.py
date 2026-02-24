@@ -297,3 +297,6 @@ def reset_first_group():
 if __name__ == '__main__':
     ensure_data_dir()
     app.run(debug=True, host='0.0.0.0', port=5001)
+else:
+    # gunicorn 启动时执行
+    ensure_data_dir()
