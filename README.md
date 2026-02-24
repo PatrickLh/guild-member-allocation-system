@@ -15,7 +15,7 @@ AI生成分配系统，用于工会战人员分配
 `cd /root/project/guild-member-allocation-system/backend`
 
 ## 4、启动服务
-`gunicorn -w 2 -b 0.0.0.0:5001 main:app --daemon`
+`python3 -m gunicorn -w 2 -b 0.0.0.0:5001 main:app --daemon`
 
 ## 备注
 
