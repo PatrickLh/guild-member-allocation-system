@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>工会分组系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group-name {
+            flex: 2;
+        }
+
+        .form-group-power {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-success {
+            background: #00b894;
+            color: white;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            width: auto;
+            font-size: 0.9rem;
+            border: 0;
+        }
+
+        .member-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .member-detail {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .profession-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .profession-斗士 {
+            background: #ffe0e0;
+            color: #d63031;
+        }
+
+        .profession-术士 {
+            background: #e0d4ff;
+            color: #6c5ce7;
+        }
+
+        .profession-骑士 {
+            background: #e0f0ff;
+            color: #0984e3;
+        }
+
+        .profession-贤者 {
+            background: #d4f0e0;
+            color: #00b894;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-edit {
+            background: #74b9ff;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .sub-tab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+
+        .sub-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .select-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .select-item {
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .select-item .count-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+        }
+
+        .select-item.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .group-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .group {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .group-title {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .group-power {
+            font-weight: 600;
+            color: #00b894;
+        }
+
+        .group-member {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .group-member:active {
+            transform: scale(0.98);
+        }
+
+        .group-member.selected-for-swap {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .swap-mode-indicator {
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #856404;
+            font-weight: 500;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .history-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .history-date {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .history-toggle {
+            font-size: 1.2rem;
+            color: #667eea;
+            transition: transform 0.2s;
+        }
+
+        .history-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .history-content {
+            margin-top: 10px;
+        }
+
+        .history-content.collapsed {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .select-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+
+            .group-member {
+                font-size: 0.9rem;
+            }
+
+            .sub-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .sub-tab {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>⚔️ 工会分组系统</h1>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('members')">成员管理</button>
+            <button class="tab" onclick="switchTab('grouping')">分组</button>
+            <button class="tab" onclick="switchTab('history')">历史记录</button>
+        </div>
+
+        <!-- 成员管理 -->
+        <div id="tab-members" class="tab-content active">
+            <div class="card">
+                <h2>
+                    👥 成员列表
+                    <button class="btn-add" onclick="openAddModal()">+ 添加成员</button>
+                </h2>
+                <div class="sub-tabs">
+                    <button class="sub-tab active" onclick="switchMemberTab('all')">全部</button>
+                    <button class="sub-tab" onclick="switchMemberTab('斗士')">斗士</button>
+                    <button class="sub-tab" onclick="switchMemberTab('术士')">术士</button>
+                    <button class="sub-tab" onclick="switchMemberTab('骑士')">骑士</button>
+                    <button class="sub-tab" onclick="switchMemberTab('贤者')">贤者</button>
+                </div>
+                <div id="memberList" class="member-list">
+                    <div class="empty-state">暂无成员，请添加</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分组 -->
+        <div id="tab-grouping" class="tab-content">
+            <div class="card">
+                <h2>🎯 选择第一组</h2>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">选择最多3人作为第一组（可选）</p>
+                <div id="firstGroupSelection" class="select-grid">
+                    <div class="empty-state" style="grid-column: 1/-1;">请先添加成员</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <button onclick="createGroups()" class="btn btn-primary">生成分组</button>
+                <button id="swapBtn" onclick="toggleSwapMode()" class="btn btn-secondary"
+                    style="display: none;">手动调整</button>
+                <button id="confirmSwapBtn" onclick="confirmSwap()" class="btn btn-primary"
+                    style="display: none; margin-top: 10px;">确认交换</button>
+                <button id="cancelSwapBtn" onclick="cancelSwap()" class="btn btn-secondary"
+                    style="display: none; margin-top: 10px;">取消</button>
+                <button id="confirmGroupBtn" onclick="confirmGroup()" class="btn btn-success"
+                    style="display: none; margin-top: 10px;">确认分组</button>
+            </div>
+
+            <div id="swapIndicator" class="swap-mode-indicator" style="display: none;">
+                请选择要交换的两个成员
+            </div>
+
+            <div id="groupResult" class="group-container">
+                <div class="empty-state">点击"生成分组"开始分组</div>
+            </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div id="tab-history" class="tab-content">
+            <div class="card">
+                <h2>📜 分组历史</h2>
+                <div id="historyList">
+                    <div class="empty-state">暂无分组历史</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加成员模态框 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">添加成员</div>
+            <form id="addMemberForm">
+                <div class="form-group">
+                    <label>成员名称</label>
+                    <input type="text" id="memberName" placeholder="请输入名称" required>
+                </div>
+                <div class="form-group">
+                    <label>职业</label>
+                    <select id="memberProfession" required>
+                        <option value="">请选择职业</option>
+                        <option value="斗士">斗士</option>
+                        <option value="术士">术士</option>
+                        <option value="骑士">骑士</option>
+                        <option value="贤者">贤者</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>战力</label>
+                    <input type="number" id="memberPower" placeholder="请输入战力" min="1" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 编辑成员模态框 -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">编辑成员</div>
+            <form id="editMemberForm">
+                <input type="hidden" id="editMemberId">
+                <div class="form-group">
+                    <label>成员名称</label>
+                    <input type="text" id="editMemberName" required>
+                </div>
+                <div class="form-group">
+                    <label>职业</label>
+                    <select id="editMemberProfession" required>
+                        <option value="斗士">斗士</option>
+                        <option value="术士">术士</option>
+                        <option value="骑士">骑士</option>
+                        <option value="贤者">贤者</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>战力</label>
+                    <input type="number" id="editMemberPower" min="1" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let members = [];
+        let firstGroupSelection = [];
+        let currentGroups = [];
+        let swapMode = false;
+        let selectedForSwap = [];
+        let currentMemberTab = 'all';
+        let firstGroupHistory = {};
+
+        // 切换主标签页
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+
+            if (tab === 'history') {
+                loadHistory();
+            }
+        }
+
+        // 切换成员列表tab
+        function switchMemberTab(tab) {
+            currentMemberTab = tab;
+            document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderMemberList();
+        }
+
+        // 打开添加模态框
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        // 关闭添加模态框
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('active');
+            document.getElementById('addMemberForm').reset();
+        }
+
+        // 加载成员列表
+        async function loadMembers() {
+            const res = await fetch(`${API_BASE}/members`);
+            members = await res.json();
+            // 按战力从高到低排序
+            members.sort((a, b) => b.power - a.power);
+
+            // 加载第一组历史
+            const historyRes = await fetch(`${API_BASE}/first-group-history`);
+            firstGroupHistory = await historyRes.json();
+
+            renderMemberList();
+            renderFirstGroupSelection();
+        }
+
+        // 渲染成员列表
+        function renderMemberList() {
+            const container = document.getElementById('memberList');
+            let filteredMembers = members;
+
+            if (currentMemberTab !== 'all') {
+                filteredMembers = members.filter(m => m.profession === currentMemberTab);
+            }
+
+            if (filteredMembers.length === 0) {
+                container.innerHTML = '<div class="empty-state">暂无成员</div>';
+                return;
+            }
+
+            container.innerHTML = filteredMembers.map(m => {
+                const firstGroupCount = firstGroupHistory[m.id] || 0;
+                return `
+                <div class="member-item">
+                    <div class="member-info">
+                        <div class="member-name">${escapeHtml(m.name)}<span class="profession-tag profession-${m.profession}">${m.profession}</span></div>
+                        <div class="member-detail">战力: ${m.power.toLocaleString()} ${firstGroupCount > 0 ? `| 第一组: ${firstGroupCount}次` : ''}</div>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-edit" onclick="openEditModal('${m.id}')">✎</button>
+                        <button class="btn-delete" onclick="deleteMember('${m.id}')">×</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // 渲染第一组选择
+        function renderFirstGroupSelection() {
+            const container = document.getElementById('firstGroupSelection');
+            if (members.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">请先添加成员</div>';
+                return;
+            }
+
+            container.innerHTML = members.map(m => {
+                const count = firstGroupHistory[m.id] || 0;
+                return `
+                <div class="select-item ${firstGroupSelection.includes(m.id) ? 'selected' : ''}"
+                     onclick="toggleFirstGroup('${m.id}')">
+                    <div>${escapeHtml(m.name)}</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 4px;">${m.power.toLocaleString()}</div>
+                    ${count > 0 ? `<div style="font-size: 0.7rem; color: #ff6b6b; margin-top: 4px;">第一组: ${count}次</div>` : ''}
+                </div>
+            `}).join('');
+        }
+
+        // 切换第一组选择
+        function toggleFirstGroup(id) {
+            const idx = firstGroupSelection.indexOf(id);
+            if (idx >= 0) {
+                firstGroupSelection.splice(idx, 1);
+            } else if (firstGroupSelection.length < 3) {
+                firstGroupSelection.push(id);
+            } else {
+                alert('第一组最多只能选择3人');
+                return;
+            }
+            renderFirstGroupSelection();
+        }
+
+        // 添加成员
+        async function addMember(e) {
+            e.preventDefault();
+            const name = document.getElementById('memberName').value.trim();
+            const profession = document.getElementById('memberProfession').value;
+            const power = parseInt(document.getElementById('memberPower').value);
+
+            const res = await fetch(`${API_BASE}/members`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, profession, power })
+            });
+
+            if (res.ok) {
+                closeAddModal();
+                await loadMembers();
+            } else {
+                const err = await res.json();
+                alert(err.error || '添加失败');
+            }
+        }
+
+        // 删除成员
+        async function deleteMember(id) {
+            if (!confirm('确定删除该成员吗？')) return;
+            await fetch(`${API_BASE}/members/${id}`, { method: 'DELETE' });
+            await loadMembers();
+        }
+
+        // 打开编辑模态框
+        function openEditModal(id) {
+            const member = members.find(m => m.id === id);
+            if (!member) return;
+
+            document.getElementById('editMemberId').value = id;
+            document.getElementById('editMemberName').value = member.name;
+            document.getElementById('editMemberProfession').value = member.profession;
+            document.getElementById('editMemberPower').value = member.power;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        // 关闭编辑模态框
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // 保存编辑
+        async function saveEdit(e) {
+            e.preventDefault();
+            const id = document.getElementById('editMemberId').value;
+            const name = document.getElementById('editMemberName').value.trim();
+            const profession = document.getElementById('editMemberProfession').value;
+            const power = parseInt(document.getElementById('editMemberPower').value);
+
+            const res = await fetch(`${API_BASE}/members/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, profession, power })
+            });
+
+            if (res.ok) {
+                closeEditModal();
+                await loadMembers();
+            } else {
+                const err = await res.json();
+                alert(err.error || '保存失败');
+            }
+        }
+
+        // 创建分组
+        async function createGroups() {
+            if (members.length < 4) {
+                alert('至少需要4名成员才能分组');
+                return;
+            }
+
+            const res = await fetch(`${API_BASE}/group`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    firstGroup: firstGroupSelection,
+                    manualAdjustments: []
+                })
+            });
+
+            if (res.ok) {
+                currentGroups = await res.json();
+                renderGroups();
+                document.getElementById('swapBtn').style.display = 'inline-block';
+                document.getElementById('confirmGroupBtn').style.display = 'inline-block';
+            } else {
+                const err = await res.json();
+                alert(err.error || '分组失败');
+            }
+        }
+
+        // 渲染分组结果
+        function renderGroups() {
+            const container = document.getElementById('groupResult');
+            if (!currentGroups || currentGroups.length === 0) {
+                container.innerHTML = '<div class="empty-state">点击"生成分组"开始分组</div>';
+                return;
+            }
+
+            container.innerHTML = currentGroups.map((group, idx) => {
+                // 组内按战力排序
+                const sortedGroup = [...group].sort((a, b) => b.power - a.power);
+                const totalPower = sortedGroup.reduce((sum, m) => sum + m.power, 0);
+
+                return `
+                <div class="group">
+                    <div class="group-header">
+                        <div class="group-title">第${idx + 1}组 (${group.length}/4)</div>
+                        <div class="group-power">总战力: ${totalPower.toLocaleString()}</div>
+                    </div>
+                    ${sortedGroup.map(m => `
+                        <div class="group-member ${selectedForSwap.includes(m.id) ? 'selected-for-swap' : ''}"
+                             onclick="selectForSwap('${m.id}')"
+                             data-member-id="${m.id}">
+                            <div>
+                                <strong>${escapeHtml(m.name)}</strong>
+                                <span class="profession-tag profession-${m.profession}">${m.profession}</span>
+                            </div>
+                            <div style="color: #666; font-size: 0.85rem;">${m.power.toLocaleString()}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `}).join('');
+        }
+
+        // 切换交换模式
+        function toggleSwapMode() {
+            swapMode = true;
+            selectedForSwap = [];
+            document.getElementById('swapIndicator').style.display = 'block';
+            document.getElementById('swapBtn').style.display = 'none';
+            document.getElementById('confirmSwapBtn').style.display = 'inline-block';
+            document.getElementById('cancelSwapBtn').style.display = 'inline-block';
+            document.getElementById('confirmGroupBtn').style.display = 'none';
+            renderGroups();
+        }
+
+        // 取消交换
+        function cancelSwap() {
+            swapMode = false;
+            selectedForSwap = [];
+            document.getElementById('swapIndicator').style.display = 'none';
+            document.getElementById('swapBtn').style.display = 'inline-block';
+            document.getElementById('confirmSwapBtn').style.display = 'none';
+            document.getElementById('cancelSwapBtn').style.display = 'none';
+            document.getElementById('confirmGroupBtn').style.display = 'inline-block';
+            renderGroups();
+        }
+
+        // 选择要交换的成员
+        function selectForSwap(id) {
+            if (!swapMode) return;
+
+            const idx = selectedForSwap.indexOf(id);
+            if (idx >= 0) {
+                selectedForSwap.splice(idx, 1);
+            } else if (selectedForSwap.length < 2) {
+                selectedForSwap.push(id);
+            }
+
+            renderGroups();
+        }
+
+        // 确认交换
+        async function confirmSwap() {
+            if (selectedForSwap.length !== 2) {
+                alert('请选择两个成员进行交换');
+                return;
+            }
+
+            // 找到两个成员的完整信息
+            let fromMember = null;
+            let toMember = null;
+
+            for (let group of currentGroups) {
+                for (let member of group) {
+                    if (member.id === selectedForSwap[0]) fromMember = member;
+                    if (member.id === selectedForSwap[1]) toMember = member;
+                }
+            }
+
+            if (!fromMember || !toMember) {
+                alert('找不到要交换的成员');
+                return;
+            }
+
+            // 创建新的分组结果（手动在前端交换）
+            const newGroups = currentGroups.map(group => {
+                return group.map(member => {
+                    if (member.id === selectedForSwap[0]) return toMember;
+                    if (member.id === selectedForSwap[1]) return fromMember;
+                    return member;
+                });
+            });
+
+            currentGroups = newGroups;
+            cancelSwap();
+        }
+
+        // 确认分组
+        async function confirmGroup() {
+            if (!confirm('确认保存本次分组吗？')) return;
+
+            const res = await fetch(`${API_BASE}/save-group-history`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    groups: currentGroups,
+                    firstGroup: firstGroupSelection
+                })
+            });
+
+            if (res.ok) {
+                alert('分组已保存！');
+                await loadMembers();
+            } else {
+                const err = await res.json();
+                alert(err.error || '保存失败');
+            }
+        }
+
+        // 加载历史记录
+        async function loadHistory() {
+            const res = await fetch(`${API_BASE}/group-history`);
+            const history = await res.json();
+
+            const container = document.getElementById('historyList');
+            if (history.length === 0) {
+                container.innerHTML = '<div class="empty-state">暂无分组历史</div>';
+                return;
+            }
+
+            container.innerHTML = history.reverse().map((h, idx) => {
+                const dateStr = new Date(h.date).toLocaleString('zh-CN');
+                const itemId = `history-${idx}`;
+                return `
+                <div class="history-item">
+                    <div class="history-header" onclick="toggleHistory('${itemId}')">
+                        <div class="history-date">${dateStr}</div>
+                        <div class="history-toggle" id="${itemId}-toggle">▼</div>
+                    </div>
+                    <div class="history-content" id="${itemId}">
+                        ${h.groups.map((group, gIdx) => {
+                    const totalPower = group.reduce((sum, m) => sum + m.power, 0);
+                    return `
+                            <div style="margin-top: 10px; padding: 10px; background: white; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #667eea; margin-bottom: 8px;">
+                                    第${gIdx + 1}组 - 总战力: ${totalPower.toLocaleString()}
+                                </div>
+                                ${group.sort((a, b) => b.power - a.power).map(m => `
+                                    <div style="font-size: 0.85rem; padding: 4px 0;">
+                                        ${escapeHtml(m.name)} <span class="profession-tag profession-${m.profession}">${m.profession}</span> - ${m.power.toLocaleString()}
+                                    </div>
+                                `).join('')}
+                            </div>
+                    `}).join('')}
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // 切换历史记录展开/收起
+        function toggleHistory(itemId) {
+            const content = document.getElementById(itemId);
+            const toggle = document.getElementById(itemId + '-toggle');
+            content.classList.toggle('collapsed');
+            toggle.classList.toggle('collapsed');
+        }
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 初始化
+        document.getElementById('addMemberForm').addEventListener('submit', addMember);
+        document.getElementById('editMemberForm').addEventListener('submit', saveEdit);
+        loadMembers();
+    </script>
+</body>
+
+</html>
